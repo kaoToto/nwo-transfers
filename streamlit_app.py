@@ -21,12 +21,13 @@ from utils.st_login import check_password
 
 #database is on https://cloud.tembo.io/
 
+CLAN_NAME = "NTV"
+
 # Set the title and favicon that appear in the Browser's tab bar.
 st.set_page_config(
-    page_title="NWO transfers",
+    page_title=f"{CLAN_NAME} transfers",
     page_icon=":recycle:",  # This is an emoji shortcode. Could be a URL too.
 )
-
 
 
 
@@ -35,10 +36,11 @@ st.set_page_config(
 link_template = "https://www.armyneedyou.com/team/user_export?type=current&dateType=lastday&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9."
 
 clan_names = {}
-clan_names[ 835 ] = "NWO"
+clan_names[ 835 ] = "NTV1"
+clan_names[35618] ="VNE"
 clan_names[ 47257] = "RES1"
 clan_names[ 10283] = "RES2"
-clan_names[ 115] = "RES3"
+#clan_names[ 115] = "RES3"
 #clan_names[ 4023] = "RES5"
 #clan_names[ 120420] = "RES6"
 #clan_names[ 3037] = "RES7"
@@ -46,7 +48,7 @@ clan_names[ 140409] = "BRA1"
 clan_names[ 8961] = "BRA2"
 clan_names[ 96873] = "BRA3"
 clan_names[ 103475] = "BRA4"
-clan_names[ 111] = "BRA5"
+clan_names[ 111] = "NTV2" # bra5
 #clan_names[ 434] = "BRA6"
 #clan_names[ 4200] = "BRA7"
 #clan_names[ 124511] = "BRA8"
@@ -54,8 +56,7 @@ clan_names[ 5425] = "SH1"
 clan_names[ 143430] = "SH2"
 clan_names[ 133909] = "SH3"
 #clan_names[142364] = "ARB"
-clan_names[148355] = "TW1"
-clan_names[35618] ="VNE"
+#clan_names[148355] = "TW1"
 #clan_names[151] ="VNE2"
 #clan_names[168017] ="VNE3"
 
@@ -79,7 +80,7 @@ for k, v in clan_names.items():
 
 
 possible_families = list(clan_ids.keys())
-possible_families  = possible_families[1:] # all teams but NWO
+possible_families  = possible_families[1:] # all teams but NTV
  
 # Function to normalize and replace fancy letters
 def replace_fancy_letters(text, remove_numbers=False):
@@ -453,12 +454,12 @@ add_generals(conn)
 # Draw the actual page, starting with the players table.
 
 # Set the title that appears at the top of the page.
-"""
-# :recycle: NWO transfers
+f"""
+# :recycle: {CLAN_NAME} transfers
 
-**Welcome to NWO transfers site**
+**Welcome to {CLAN_NAME}  transfers site**
 
-*This page prepares NWO clan movements.*
+*This page prepares {CLAN_NAME}  clan movements.*
 
 """
 if not check_password():
@@ -471,10 +472,10 @@ if not st.session_state["can_write"]:
     st.warning(f"You have read only access, your changes won't be saved to db")
 
 with st.expander("How to use?"):
-    st.markdown("""
+    st.markdown(f"""
 
 
-1. *[Optional]* In the first table, set a clan of origin for NWO players that are not identifed as BRA / SH / RES. Those without orgin clan will be first
+1. *[Optional]* In the first table, set a clan of origin for {CLAN_NAME}  players that are not identifed as BRA / SH / RES. Those without orgin clan will be first
 2. **[Compulsory]** Make sure you have the correct list of generals
 3. Press the load button to download and process last reset's reports. They are available 2-3 hours after reset
 
@@ -487,9 +488,9 @@ with st.expander("How to use?"):
 
 st.subheader("Clans of Origin")
 st.info(
-    """
-    Use the following table to set a team (RES, BRA, SH) of origin for all NWO players.
-    When the player no longer qualifies for NWO, he will be sent to his clan of origin.
+    f"""
+    Use the following table to set a team (RES, BRA, SH, ...) of origin for all {CLAN_NAME}  players.
+    When the player no longer qualifies for {CLAN_NAME} , he will be sent to his clan of origin.
     If no clan of origin is set, one will be granted randomly.
     """
 )
@@ -623,24 +624,24 @@ def fill_missing_values(row):
     return np.random.choice(possible_families)
     
 
-if st.button("Reload players ranks from NWO"):
+if st.button(f"Reload players ranks from {CLAN_NAME} "):
     from utils.aow_links import pull_all_aow_links
-    with st.spinner("Pulling NWO report"): 
-        df_nwo= pull_all_aow_links("NWO", clan_ids,clan_names)
+    with st.spinner(f"Pulling {CLAN_NAME} reports"): 
+        df_nwo= pull_all_aow_links(CLAN_NAME, clan_ids,clan_names)
         st.session_state.players_ranks_df = df_nwo
         new_df_nwo =  df_nwo[~df_nwo['ID'].isin(players_df['player_id'])]
         create_new_users(new_df_nwo)
         st.session_state.players_ranks_df = df_nwo
 
     for key in clan_ids.keys():
-        if key != "NWO":
+        if key != CLAN_NAME:
             with st.spinner(f"Pulling {key} report"): 
                 sleep(1)
                 df_team = pull_all_aow_links(key, clan_ids,clan_names)
-                if key == "TW":
-                    create_new_users(df_team)
-                else :
-                    assign_users(df_team,key)
+                #if key == "TW":
+                create_new_users(df_team)
+                #else :
+                #    assign_users(df_team,key)
                 st.session_state.players_ranks_df = pd.concat([st.session_state.players_ranks_df,df_team ])
 
     
@@ -663,10 +664,10 @@ if "players_ranks_df" in st.session_state:
 
     
     st.session_state.moves = ""
-    ## Moves to NWO
-    print(clan_ids["NWO"])
+    ## Moves to {CLAN_NAME} 
+    print(clan_ids[CLAN_NAME])
 
-    nwo_clan_count = len( clan_ids["NWO"])
+    nwo_clan_count = len( clan_ids[CLAN_NAME])
     st.session_state.movesdf = pd.DataFrame(columns=[
             "player_id",
             "from",
@@ -732,7 +733,7 @@ if "players_ranks_df" in st.session_state:
     st.session_state.players_ranks_df['cant_move'] = st.session_state.players_ranks_df['ID'].apply( lambda player_id :  player_id in merged_df['new_general'].tolist() )
 
     players_excepted_generals_df = st.session_state.players_ranks_df[st.session_state.players_ranks_df['cant_move']  == False]
-    for index, nwo_clan_id in enumerate(clan_ids["NWO"]):
+    for index, nwo_clan_id in enumerate(clan_ids[CLAN_NAME]):
         for _, row in players_excepted_generals_df.iloc[49*index:49+49*index].iterrows():
             #if row["Current Clan"] != nwo_clan_id:
             #st.session_state.movesdf =  f"{st.session_state.moves}\n{row["ID"]} - {row["Current Clan"]} - {nwo_clan_id}"
@@ -840,7 +841,7 @@ if "movesdf" in st.session_state.keys() :
     export_df = export_df.rename(columns={'from': 'from_clan_id', 'destination': 'to_clan_id', 'origin':'family'})
     # Get the current date in YYYY-MM-DD format
     current_date = datetime.now().strftime("%Y-%m-%d")
-    file_name = f"NWO_Rotations_{current_date}"
+    file_name = f"{CLAN_NAME}_Rotations_{current_date}"
 
     # Function to convert DataFrame to Excel and return as a downloadable object
     def to_excel(df):
