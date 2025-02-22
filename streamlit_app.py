@@ -36,8 +36,11 @@ st.set_page_config(
 link_template = "https://www.armyneedyou.com/team/user_export?type=current&dateType=lastday&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9."
 
 clan_names = {}
-clan_names[ 835 ] = "NTV1"
-clan_names[35618] ="VNE"
+
+#clan_names[148355] = "NTV1" # ex TW1
+clan_names[ 835 ] = "NTV1" # ex NWO
+clan_names[35618] ="NTV2" # ex VNE
+clan_names[151] ="VNE1"
 clan_names[ 47257] = "RES1"
 clan_names[ 10283] = "RES2"
 #clan_names[ 115] = "RES3"
@@ -48,7 +51,7 @@ clan_names[ 140409] = "BRA1"
 clan_names[ 8961] = "BRA2"
 clan_names[ 96873] = "BRA3"
 clan_names[ 103475] = "BRA4"
-clan_names[ 111] = "NTV2" # bra5
+clan_names[ 111] = "BRA5" # bra5
 #clan_names[ 434] = "BRA6"
 #clan_names[ 4200] = "BRA7"
 #clan_names[ 124511] = "BRA8"
@@ -56,8 +59,6 @@ clan_names[ 5425] = "SH1"
 clan_names[ 143430] = "SH2"
 clan_names[ 133909] = "SH3"
 #clan_names[142364] = "ARB"
-#clan_names[148355] = "TW1"
-#clan_names[151] ="VNE2"
 #clan_names[168017] ="VNE3"
 
 #clan_names[4860] = "TW2"
