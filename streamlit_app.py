@@ -38,8 +38,8 @@ link_template = "https://www.armyneedyou.com/team/user_export?type=current&dateT
 clan_names = {}
 
 #clan_names[148355] = "NTV1" # ex TW1
-clan_names[ 835 ] = "NTV1" # ex NWO
-clan_names[35618] ="NTV2" # ex VNE
+clan_names[35618] ="VNENWO1" # ex VNE
+clan_names[ 835 ] = "VNENWO2" # ex NWO
 clan_names[151] ="VNE1"
 clan_names[ 47257] = "RES1"
 clan_names[ 10283] = "RES2"
