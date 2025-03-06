@@ -21,7 +21,7 @@ from utils.st_login import check_password
 
 #database is on https://cloud.tembo.io/
 
-CLAN_NAME = "VNENWO"
+CLAN_NAME = "VNNWO"
 
 # Set the title and favicon that appear in the Browser's tab bar.
 st.set_page_config(
