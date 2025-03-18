@@ -21,7 +21,7 @@ from utils.st_login import check_password
 
 #database is on https://cloud.tembo.io/
 
-CLAN_NAME = "VNNWO"
+CLAN_NAME = "SYD"
 
 # Set the title and favicon that appear in the Browser's tab bar.
 st.set_page_config(
@@ -38,8 +38,9 @@ link_template = "https://www.armyneedyou.com/team/user_export?type=current&dateT
 clan_names = {}
 
 #clan_names[148355] = "NTV1" # ex TW1
-clan_names[35618] ="VNNWO1" # ex VNE
-clan_names[ 835 ] = "VNNWO2" # ex NWO
+clan_names[35618] ="SYD" # ex VNE
+clan_names[ 835 ] = "SYD2" # ex NWO
+
 clan_names[151] ="VNE1"
 clan_names[ 47257] = "RES1"
 clan_names[ 10283] = "RES2"
