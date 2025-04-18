@@ -700,7 +700,7 @@ if "players_ranks_df" in st.session_state:
 #                             )
     
     # Create 'at_home' column where clan_id in general_df matches clan_id in player_df
-    merged_df['at_home'] = merged_df['clan_id'] == merged_df['Current Clan']
+    #merged_df['at_home'] = merged_df['clan_id'] == merged_df['Current Clan']
     # Replace NaN values in the 'Name' column with an empty string
     merged_df['Name'] = merged_df['Name'].fillna('?')
     merged_df['name_clan'] = merged_df['Name'] + ' (' + merged_df['clan_name'] + ')'
