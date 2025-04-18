@@ -657,7 +657,7 @@ if st.button(f"Reload players ranks from {CLAN_NAME} "):
     print("before apply len",len(st.session_state.players_ranks_df))
     st.session_state.players_ranks_df['ID'] =  pd.to_numeric(st.session_state.players_ranks_df['ID'], errors='coerce')
 
-    st.session_state.players_ranks_df['origin'] = st.session_state.players_ranks_df.apply(fill_missing_values, axis=1)
+    #st.session_state.players_ranks_df['origin'] = st.session_state.players_ranks_df.apply(fill_missing_values, axis=1)
     print("after apply len",len(st.session_state.players_ranks_df))
 
     st.rerun()
