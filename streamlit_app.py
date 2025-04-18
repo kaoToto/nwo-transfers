@@ -40,25 +40,27 @@ clan_names = {}
 #clan_names[148355] = "NTV1" # ex TW1
 clan_names[35618] ="SYD" # ex VNE
 clan_names[ 835 ] = "SYD2" # ex NWO
+clan_names[111] ="SYD3" # ex VNE
+clan_names[ 133909 ] = "SYD4" # ex NWO
 
-clan_names[151] ="VNE1"
-clan_names[ 47257] = "RES1"
-clan_names[ 10283] = "RES2"
+#clan_names[151] ="VNE1"
+#clan_names[ 47257] = "RES1"
+#clan_names[ 10283] = "RES2"
 #clan_names[ 115] = "RES3"
 #clan_names[ 4023] = "RES5"
 #clan_names[ 120420] = "RES6"
 #clan_names[ 3037] = "RES7"
-clan_names[ 140409] = "BRA1"
-clan_names[ 8961] = "BRA2"
-clan_names[ 96873] = "BRA3"
-clan_names[ 103475] = "BRA4"
-clan_names[ 111] = "BRA5" # bra5
+#clan_names[ 140409] = "BRA1"
+#clan_names[ 8961] = "BRA2"
+#clan_names[ 96873] = "BRA3"
+#clan_names[ 103475] = "BRA4"
+##clan_names[ 111] = "BRA5" # bra5
 #clan_names[ 434] = "BRA6"
 #clan_names[ 4200] = "BRA7"
 #clan_names[ 124511] = "BRA8"
-clan_names[ 5425] = "SH1"
-clan_names[ 143430] = "SH2"
-clan_names[ 133909] = "SH3"
+#clan_names[ 5425] = "SH1"
+#clan_names[ 143430] = "SH2"
+#clan_names[ 133909] = "SH3"
 #clan_names[142364] = "ARB"
 #clan_names[168017] ="VNE3"
 
@@ -236,6 +238,7 @@ def add_or_update_player(conn, id, name,clan):
         """
     )
     conn.commit()
+
 
 def add_or_update_general(clan_id, player_id):
     cursor = conn.cursor()
@@ -449,7 +452,7 @@ conn, db_was_just_created = connect_db()
 if db_was_just_created:
     initialize_data(conn)
     st.toast("Database initialized with some sample data.")
-add_generals(conn)
+#add_generals(conn)
 
 
 # -----------------------------------------------------------------------------
@@ -478,7 +481,7 @@ with st.expander("How to use?"):
 
 
 1. *[Optional]* In the first table, set a clan of origin for {CLAN_NAME}  players that are not identifed as BRA / SH / RES. Those without orgin clan will be first
-2. **[Compulsory]** Make sure you have the correct list of generals
+2. No need to set generals anymore
 3. Press the load button to download and process last reset's reports. They are available 2-3 hours after reset
 
     You get two tables, one with the full player list sorted by rank. A second with all moves
@@ -506,10 +509,10 @@ players_df['player_id'] = players_df['player_id'].astype(int)
 players_df['clan'] = players_df['clan'].astype(str)
 players_df['player_name'] = players_df['player_name'].astype(str)
 
-generals_df = load_generals_data(conn)
+#generals_df = load_generals_data(conn)
 
-generals_df['clan_id'] = generals_df['clan_id'].astype(int)
-generals_df['player_id'] = generals_df['player_id'].astype(int)
+#generals_df['clan_id'] = generals_df['clan_id'].astype(int)
+#generals_df['player_id'] = generals_df['player_id'].astype(int)
 
 col1,col2 = st.columns([3,2])
 
@@ -537,52 +540,52 @@ with col2:
         args=(conn, players_df, st.session_state.player_table),
     )
 
-st.subheader("Generals")
+#st.subheader("Generals")
 
-st.info("It is mandatory to have un up to date list of generals")
+#st.info("It is mandatory to have un up to date list of generals")
 
-col1,col2 = st.columns([3,2])
-generals_df['priority'] = generals_df['clan_name'].apply(lambda x: f"0{x}" if x.startswith('NW') else f"1{x}" )
+#col1,col2 = st.columns([3,2])
+#generals_df['priority'] = generals_df['clan_name'].apply(lambda x: f"0{x}" if x.startswith('NW') else f"1{x}" )
 
-generals_df =  generals_df.sort_values(by='priority')
-generals_df.drop(columns=['priority'])
-generals_df.reset_index(inplace=True)
+#generals_df =  generals_df.sort_values(by='priority')
+#generals_df.drop(columns=['priority'])
+#generals_df.reset_index(inplace=True)
 
-generals_df['player_name']= generals_df['player_id'].apply( lambda player_id :  '' if player_id == 0 else players_df[ players_df['player_id'] == player_id]['player_name'].values[0] )
+#generals_df['player_name']= generals_df['player_id'].apply( lambda player_id :  '' if player_id == 0 else players_df[ players_df['player_id'] == player_id]['player_name'].values[0] )
 
 # Display data withnot editable
-with col1: 
-    st.dataframe(
-        generals_df,
-        column_order = ("clan_id", "clan_name",   "player_id",  "player_name"),   
-    )
-                
-with col2: 
-    with st.container(border=True):
-        st.write("Change a General")
-        generals_have_uncommitted_changes = False
-        last_gen_clan = None
-        last_gen_name = None
-
-        new_general_clan = st.selectbox("Clan",options = clan_names.values(), index = None)
-        new_general_name = st.selectbox("General",options =players_df['player_name'], index = None)
-
-        edited = new_general_clan is not None  and new_general_name is not None
-
-        if st.button(":warning: Save Changes",  
-                     disabled = not edited or st.session_state["can_write"] == False
-            , key="generalbutt"):
-            new_general_id = players_df[ players_df['player_name'] == new_general_name ]['player_id'].values[0]
-            new_general_clan_id = None
-            for k,v in clan_names.items():
-                if v == new_general_clan :
-                    new_general_clan_id = k
-                    break
-            last_gen_clan = new_general_clan
-            last_gen_name = new_general_name      
-            add_or_update_general(clan_id=new_general_clan_id, player_id=new_general_id)
-
-            st.rerun()
+#with col1: 
+#    st.dataframe(
+#        generals_df,
+#        column_order = ("clan_id", "clan_name",   "player_id",  "player_name"),   
+#    )
+#               
+#with col2: 
+#    with st.container(border=True):
+#        st.write("Change a General")
+#        generals_have_uncommitted_changes = False
+#        last_gen_clan = None
+#        last_gen_name = None
+#
+#        new_general_clan = st.selectbox("Clan",options = clan_names.values(), index = None)
+#        new_general_name = st.selectbox("General",options =players_df['player_name'], index = None)
+#
+#       edited = new_general_clan is not None  and new_general_name is not None
+#
+#        if st.button(":warning: Save Changes",  
+#                     disabled = not edited or st.session_state["can_write"] == False
+#            , key="generalbutt"):
+#            new_general_id = players_df[ players_df['player_name'] == new_general_name ]['player_id'].values[0]
+#            new_general_clan_id = None
+#            for k,v in clan_names.items():
+#                if v == new_general_clan :
+#                    new_general_clan_id = k
+#                    break
+#            last_gen_clan = new_general_clan
+#            last_gen_name = new_general_name      
+#            add_or_update_general(clan_id=new_general_clan_id, player_id=new_general_id)
+#
+#            st.rerun()
         
 
                     
@@ -681,62 +684,56 @@ if "players_ranks_df" in st.session_state:
             "trophies"]
             )
     
-    # we will sort 49 player per team, on a list with no generals
-    # unfortunately,  if a selected general is not in his clan,
-    # we would not consider and he will be not counted in the clan where he is
-    # which would end at 51
-    # and  counted in the clan he should be, where he is no more
-    # which would end at 49
+    # we will sort 50 player per team, on a list with the generals
+   
 
     # to prevent that, we need to sort 49 player per clan and ignore one player, preferably in the middle of the clan
 
-    # so, we will make a list of 1 player per clan
-    # with all generals that are at home, and a middle ranked player from that clan otherwise 
-
-    # Merge player_df with general_df on player_id
+   
 
 
     st.session_state.players_ranks_df['player_id'] = st.session_state.players_ranks_df['ID']
-    merged_df = generals_df.merge(st.session_state.players_ranks_df[['player_id', 'Name', 'Current Clan']], 
-                             on= 'player_id', 
-                             how='left', 
-                             )
+    merged_df = st.session_state.players_ranks_df
+#    merged_df = generals_df.merge(st.session_state.players_ranks_df[['player_id', 'Name', 'Current Clan']], 
+#                             on= 'player_id', 
+#                             how='left', 
+#                             )
     
     # Create 'at_home' column where clan_id in general_df matches clan_id in player_df
     merged_df['at_home'] = merged_df['clan_id'] == merged_df['Current Clan']
     # Replace NaN values in the 'Name' column with an empty string
     merged_df['Name'] = merged_df['Name'].fillna('?')
     merged_df['name_clan'] = merged_df['Name'] + ' (' + merged_df['clan_name'] + ')'
-    wandering_generals = merged_df[  merged_df['at_home']  == False ]
-    if not wandering_generals['name_clan'].empty:
-        st.warning(f"The following listed Generals are not even in their clan {str(wandering_generals['name_clan'].tolist())}")
-    def find_middle_player(clan_id):
-        # Filter player_df by clan_id
-        clan_players = st.session_state.players_ranks_df[st.session_state.players_ranks_df['Current Clan'] == clan_id]
+#    wandering_generals = merged_df[  merged_df['at_home']  == False ]
+#    if not wandering_generals['name_clan'].empty:
+#        st.warning(f"The following listed Generals are not even in their clan {str(wandering_generals['name_clan'].tolist())}")
+#    def find_middle_player(clan_id):
+#        # Filter player_df by clan_id
+#        clan_players = st.session_state.players_ranks_df[st.session_state.players_ranks_df['Current Clan'] == clan_id]
+#        
+#        if not clan_players.empty:
+#            # Get the middle index
+#            middle_index = len(clan_players) // 2
+#            # Select the player at the middle index
+##            middle_player = clan_players.iloc[middle_index]
+#            return middle_player['player_id']
+#        else:
+#            return None  # No players in this clan
         
-        if not clan_players.empty:
-            # Get the middle index
-            middle_index = len(clan_players) // 2
-            # Select the player at the middle index
-            middle_player = clan_players.iloc[middle_index]
-            return middle_player['player_id']
-        else:
-            return None  # No players in this clan
-        
-    def replace_general(general_row):
-        if general_row['at_home']:
-            return general_row['player_id']  # Keep original general if at home
-        else:
-            return find_middle_player(general_row['clan_id'])  # Replace if not at home
+#    def replace_general(general_row):
+#        if general_row['at_home']:
+#            return general_row['player_id']  # Keep original general if at home
+#        else:
+#            return find_middle_player(general_row['clan_id'])  # Replace if not at home
         
 
     # Apply the function to find replacements for non-home generals
-    merged_df['new_general'] = merged_df.apply(replace_general, axis=1)
-    st.session_state.players_ranks_df['cant_move'] = st.session_state.players_ranks_df['ID'].apply( lambda player_id :  player_id in merged_df['new_general'].tolist() )
+#    merged_df['new_general'] = merged_df.apply(replace_general, axis=1)
+#    st.session_state.players_ranks_df['cant_move'] = st.session_state.players_ranks_df['ID'].apply( lambda player_id :  player_id in merged_df['new_general'].tolist() )
 
-    players_excepted_generals_df = st.session_state.players_ranks_df[st.session_state.players_ranks_df['cant_move']  == False]
+    players_excepted_generals_df = st.session_state.players_ranks_df #[st.session_state.players_ranks_df['cant_move']  == False]
     for index, nwo_clan_id in enumerate(clan_ids[CLAN_NAME]):
-        for _, row in players_excepted_generals_df.iloc[49*index:49+49*index].iterrows():
+        for _, row in players_excepted_generals_df.iloc[50*index:50+50*index].iterrows():
             #if row["Current Clan"] != nwo_clan_id:
             #st.session_state.movesdf =  f"{st.session_state.moves}\n{row["ID"]} - {row["Current Clan"]} - {nwo_clan_id}"
             
@@ -753,14 +750,14 @@ if "players_ranks_df" in st.session_state:
             # Add the new row using loc
             st.session_state.movesdf.loc[len(st.session_state.movesdf )] = new_row
 
-    remaining_players_df = players_excepted_generals_df.iloc[49*nwo_clan_count:]
+    remaining_players_df = players_excepted_generals_df.iloc[50*nwo_clan_count:]
 
     clans_to_sort = possible_families
     for clan_to_sort in clans_to_sort: 
     
         remaining_players_clan = remaining_players_df[remaining_players_df['origin'] == clan_to_sort]
         for index, target_clan_id in enumerate(clan_ids[clan_to_sort]):
-            for _, row in remaining_players_clan[49*index:49+49*index].iterrows():
+            for _, row in remaining_players_clan[50*index:50+50*index].iterrows():
                 #if row["Current Clan"] != target_clan_id:
                 # New row to add
                 new_row = {"player_id" : row["ID"],
@@ -797,7 +794,6 @@ if "movesdf" in st.session_state.keys() :
     The table below will be recalculated after each edit, 
     make sure that clans are full but not over 50. 
             
-    Generals cannot be moved, they are not in the table
     """)
     filter_moves_only = st.checkbox("Filter on moves only")
    
