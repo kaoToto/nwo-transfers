@@ -695,7 +695,7 @@ if "players_ranks_df" in st.session_state:
     st.session_state.players_ranks_df['player_id'] = st.session_state.players_ranks_df['ID']
     merged_df = st.session_state.players_ranks_df
     st.dataframe(merged_df)
-    merged_df['clan_name']= merged_df['current team']
+    #merged_df['clan_name']= merged_df['current team']
 
 #    merged_df = generals_df.merge(st.session_state.players_ranks_df[['player_id', 'Name', 'Current Clan']], 
 #                             on= 'player_id', 
