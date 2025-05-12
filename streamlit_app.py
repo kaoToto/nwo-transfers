@@ -42,6 +42,7 @@ clan_names[35618] ="SYD" # ex VNE
 clan_names[ 835 ] = "SYD2" # ex NWO
 clan_names[111] ="SYD3" # ex VNE
 clan_names[ 133909 ] = "SYD4" # ex NWO
+clan_names[ 143430] = "SYD5" # ex "SH2"
 
 #clan_names[151] ="VNE1"
 #clan_names[ 47257] = "RES1"
@@ -59,7 +60,6 @@ clan_names[ 133909 ] = "SYD4" # ex NWO
 #clan_names[ 4200] = "BRA7"
 #clan_names[ 124511] = "BRA8"
 #clan_names[ 5425] = "SH1"
-#clan_names[ 143430] = "SH2"
 #clan_names[ 133909] = "SH3"
 #clan_names[142364] = "ARB"
 #clan_names[168017] ="VNE3"
